@@ -107,7 +107,62 @@ class MyDataset(data.Dataset):
             raise ValueError(f"Undefine label from path {img_path}")
         
         return img_transformed, label
+
+class UnNormalize(object):
+    def __init__(self, mean, std):
+        self.mean = mean
+        self.std = std
+
+    def __call__(self, tensor):
+        """
+        Args:
+            tensor(Tensor): Tensor image of size(C, H, W) to be normalize
+        Returns:
+            Tensor: Normalize Image
+        """
+
+        for t, m, s  in zip(tensor, self.mean, self.std):
+            t.mul_(s).add(m)
+            #the normalize code -> t.sub(m).div_(s)
+        return tensor
     
-    
-    
+if __name__ == "__main__":
+    root_path = r"root_path"
+    train_list, test_list, val_list = make_datapath_list(root_path)
+    print("Train list:", len(train_list))
+    print(train_list[0])
+
+    transforms = ImageTranform(resize=resize, mean=mean, std=std)
+
+    test_dataset = MyDataset(test_list, transforms, test)
+    train_dataset = MyDataset(train_list, transforms, train)
+    val_dataset = MyDataset(val_list,  transforms, val) 
+
+    index = 100
+    unorm = UnNormalize(mean=mean, std=mean)
+
+    # Read image
+    img_path = test_list[index]
+    img_original = Image.open(img_path)
+
+    # Image to tensor, label
+    img_transform, label = test_dataset.__getitem__(index)
+
+    # Image transform
+    img_transformed = transforms(img_original, phase=train)
+    img_transformed = img_transformed.numpy().transpose(1, 2, 0)
+    img_transformed = np.clip(img_transformed, 0, 1)
+
+    print(f"Label: {label}")
+    print(img_transform.shape)
+
+    plt.subplot(1,3,1)
+    plt.imshow(img_original)
+
+    plt.subplot(1, 3, 2)
+    plt.imshow(img_transformed)
+
+    plt.subplot(1, 3, 3)
+    plt.imshow(unorm(img_transform).permute(1, 2, 0))
+    plt.show()    
 
