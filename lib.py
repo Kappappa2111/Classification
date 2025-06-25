@@ -3,6 +3,7 @@ import zipfile
 import urllib.request
 import matplotlib.pyplot as plt
 import random
+import pandas as pd
 
 #torch
 import torch

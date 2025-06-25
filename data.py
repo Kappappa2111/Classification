@@ -1,5 +1,6 @@
 from lib import *
 from config import *
+import os.path as osp
 
 
 def make_datapath_list(root_path):
