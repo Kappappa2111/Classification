@@ -32,7 +32,7 @@ class MaxPool2D:
         self.kernel_size = kernel_size
         self.stride = stride
 
-    def forward(self. x):
+    def forward(self, x):
         batch_size, height, width , channels = x.shape
         out_height = (height - self.kernel_size) // self.stride + 1
         out_width =  (width - self.kernel_size) // self.stride + 1
@@ -87,7 +87,7 @@ class Conv2D:
     def forward(self, x):
         # Import size input
         batch_size, in_channels = H, W = x.shape
-        assert in_channels = self.in_channels,  "in_channels is not match"
+        assert in_channels == self.in_channels,  "in_channels is not match"
 
         # Add padding into input
         x_padded = np.pad(x, ((0, 0), (0, 0), (self.padding, self.padding), (self.padding, self.padding)), mode='constant')
@@ -117,7 +117,7 @@ class Conv2D:
 
     def __call__(self, x):
         return self.forward(x)
-    
-     
+
+
     
 
